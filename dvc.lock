@@ -13,9 +13,59 @@ stages:
       md5: 81a4c44f698f363f58893cf42c3c6471
       size: 781
     - path: src/load_data.py
-      md5: 2d55daab310a408e42edeb4bab5d7688
-      size: 704
+      md5: d7d6c1c669e1e08b2aeb36d09daf33e6
+      size: 746
     outs:
     - path: data/raw/fashion-mnist_train.csv
-      md5: 316626fcae24b13bb1696e3464d5fc36
-      size: 133396084
+      md5: 976229da8a00a3ccf41b8009e4e48d77
+      size: 133047193
+  split_data:
+    cmd: python src/split_data.py --config=params.yaml
+    deps:
+    - path: data/raw/fashion-mnist_train.csv
+      md5: 976229da8a00a3ccf41b8009e4e48d77
+      size: 133047193
+    - path: data/raw/fashion-mnist_train.csv
+      md5: 976229da8a00a3ccf41b8009e4e48d77
+      size: 133047193
+    - path: src/split_data.py
+      md5: 37a1edd0db138cc184ce5ad8a7e9dfd7
+      size: 885
+    outs:
+    - path: data/processed/fashion-mnist_test.csv
+      md5: 64ec16a6b73b3514634d529a71dd8306
+      size: 22176691
+    - path: data/processed/fashion-mnist_train.csv
+      md5: 976229da8a00a3ccf41b8009e4e48d77
+      size: 133047193
+  train_and_evaluate:
+    cmd: python src/train_and_evaluate.py --config=params.yaml
+    deps:
+    - path: data/processed/fashion-mnist_test.csv
+      md5: 64ec16a6b73b3514634d529a71dd8306
+      size: 22176691
+    - path: data/processed/fashion-mnist_train.csv
+      md5: 976229da8a00a3ccf41b8009e4e48d77
+      size: 133047193
+    - path: src/train_and_evaluate.py
+      md5: 50dde520daeb6cb2a08df6b805690116
+      size: 3202
+    params:
+      params.yaml:
+        estimators.CnnNetwork.params.activation: softmax
+        estimators.CnnNetwork.params.batch_size: 128
+        estimators.CnnNetwork.params.epochs: 5
+        estimators.CnnNetwork.params.loss: sparse_categorical_crossentropy
+        estimators.CnnNetwork.params.metrics:
+        - accuracy
+        estimators.CnnNetwork.params.optimiser: adam
+    outs:
+    - path: report/params.json
+      md5: fe48f6f9d8f06974bddbfe1a786e7003
+      size: 195
+    - path: report/scores.json
+      md5: 8daaec00140729a5622cb535790a0714
+      size: 71
+    - path: saved_models/full_mnist_model.h5
+      md5: 4e692dac5ed3f11d7ffedeb7bda55f5b
+      size: 455344

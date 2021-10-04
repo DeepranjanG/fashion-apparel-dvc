@@ -1,0 +1,10 @@
+{
+    "loss_function": "sparse_categorical_crossentropy",
+    "optimiser": "adam",
+    "metrics": [
+        "accuracy"
+    ],
+    "activation": "softmax",
+    "batch_size": 128,
+    "epochs": 5
+}

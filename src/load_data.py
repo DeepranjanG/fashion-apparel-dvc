@@ -9,8 +9,8 @@ def load_and_save(config_path):
     df_train, df_test = get_data(config_path)
     raw_train_data_path = config['load_data']['raw_train_dataset_csv']
     raw_test_data_path = config['load_data']['raw_test_dataset_csv']
-    df_train.to_csv(raw_train_data_path)
-    df_test.to_csv(raw_test_data_path)
+    df_train.to_csv(raw_train_data_path,sep=",", index=False)
+    df_test.to_csv(raw_test_data_path,sep=",", index=False)
     
 
 

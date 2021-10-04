@@ -1,7 +1,6 @@
 base:
   project: fashionapparel-project
-  random_state: 42
-  target_col: TARGET
+  target_col: label
 
 data_source:
   s3_source_train: data_given/fashion-mnist_train.csv
@@ -14,19 +13,21 @@ load_data:
 split_data:
   train_path: data/processed/fashion-mnist_train.csv
   test_path: data/processed/fashion-mnist_test.csv
-  # test_size: 0.2
 
-# estimators:
-#   ElasticNet:
-#     params:
-#       # alpha: 0.88
-#       # l1_ratio: 0.89
-#       alpha: 0.9
-#       l1_ratio: 0.4
+
+estimators:
+  CnnNetwork:
+    params:
+      loss: "sparse_categorical_crossentropy"
+      optimiser: "adam"
+      metrics: ['accuracy']
+      activation: "softmax"
+      batch_size: 128
+      epochs: 5
 model_dir: saved_models
 
-# reports:
-#   params: report/params.json
-#   scores: report/scores.json
+reports:
+  params: report/params.json
+  scores: report/scores.json
 
 # webapp_model_dir: prediction_service/model/model.joblib
