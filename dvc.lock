@@ -48,8 +48,8 @@ stages:
       md5: 976229da8a00a3ccf41b8009e4e48d77
       size: 133047193
     - path: src/train_and_evaluate.py
-      md5: 50dde520daeb6cb2a08df6b805690116
-      size: 3202
+      md5: 462c7067515f9ba86126cc6fdf9cfbf2
+      size: 3164
     params:
       params.yaml:
         estimators.CnnNetwork.params.activation: softmax
@@ -64,8 +64,8 @@ stages:
       md5: fe48f6f9d8f06974bddbfe1a786e7003
       size: 195
     - path: report/scores.json
-      md5: 8daaec00140729a5622cb535790a0714
+      md5: 9fa4ea44e9ca3a9f639fc645e4d2db56
       size: 71
     - path: saved_models/full_mnist_model.h5
-      md5: 4e692dac5ed3f11d7ffedeb7bda55f5b
+      md5: 4cf8098bd705a2a11283ddf717b00e55
       size: 455344

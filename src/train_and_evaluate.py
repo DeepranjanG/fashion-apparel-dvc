@@ -94,8 +94,6 @@ def train_and_evaluate(config_path):
     os.makedirs(model_dir, exist_ok=True)    
     model.save(os.path.join(model_dir, "full_mnist_model.h5"))
 
-    # joblib.dump(model, model_path)
-
 
 
 
