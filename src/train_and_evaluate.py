@@ -13,6 +13,8 @@ import json
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
+import mlflow
+from urllib.parse import urlparse
 
 
 def train_and_evaluate(config_path):
@@ -43,8 +45,16 @@ def train_and_evaluate(config_path):
     train_images = np.array(train_x) / 255.0
     test_images = np.array(test_x) / 255.0
 
-    model = keras.Sequential(
-    [
+    
+    mlflow_config = config["mlflow_config"]
+    remote_server_uri = mlflow_config["remote_server_uri"]
+
+    mlflow.set_tracking_uri(remote_server_uri)
+
+    mlflow.set_experiment(mlflow_config["experiment_name"])
+
+    with mlflow.start_run(run_name=mlflow_config["run_name"]) as mlops_run:
+        model = keras.Sequential([
         keras.Input(shape=(784)),
         layers.Reshape((28, 28, 1)),
         layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
@@ -53,45 +63,34 @@ def train_and_evaluate(config_path):
         layers.MaxPooling2D(pool_size=(2, 2)),
         layers.Flatten(),
         layers.Dropout(0.5),
-        layers.Dense(10, activation=activation),
-    ])
+        layers.Dense(10, activation=activation)])
 
-    model.compile(loss=loss, optimizer=optimiser, metrics=metrics)
+        
+        model.compile(loss=loss, optimizer=optimiser, metrics=metrics)
 
-    model.fit(x=train_images, y=train_y, batch_size=batch_size, epochs=epochs, validation_data=(test_images, test_y))
+        model.fit(x=train_images, y=train_y, batch_size=batch_size, epochs=epochs, validation_data=(test_images, test_y))
 
-    eval_metrics = model.evaluate(test_images, test_y)
+        eval_metrics = model.evaluate(test_images, test_y)
 
-    # print("Elasticnet model (alpha=%f, l1_ratio=%f):" % (alpha, l1_ratio))
-    # print("  RMSE: %s" % rmse)
-    print("  LOSS: %s" % eval_metrics[0])
-    print("  ACCURACY: %s" % eval_metrics[1])
+        mlflow.log_param("loss_function", loss)
+        mlflow.log_param("optimiser", optimiser)
+        mlflow.log_param("activation", activation)
+        mlflow.log_param("batch_size", batch_size)
+        mlflow.log_param("epochs", epochs)
 
-    
-    scores_file = config["reports"]["scores"]
-    params_file = config["reports"]['params']
+        mlflow.log_metric("LOSS", eval_metrics[0])
+        mlflow.log_metric("ACCURACY", eval_metrics[1])
 
-    with open(scores_file, "w") as f:
-        scores = {
-            "loss" : eval_metrics[0],
-            "accuracy" : eval_metrics[1]
-        }
-        json.dump(scores, f, indent=4)
-    
-    with open(params_file, "w") as f:
-        params = {
-            "loss_function" : loss,
-            "optimiser" : optimiser,
-            "metrics" : metrics,
-            "activation" : activation,
-            "batch_size" : batch_size,
-            "epochs" : epochs
-        }
-        json.dump(params, f, indent=4)
+        tracking_url_type_store = urlparse(mlflow.get_artifact_uri()).scheme
 
+        if tracking_url_type_store != "file":
+            mlflow.keras.log_model(
+                model, 
+                "model", 
+                registered_model_name=mlflow_config["registered_model_name"])
+        else:
+            mlflow.keras.load_model(model, "model")
 
-    os.makedirs(model_dir, exist_ok=True)    
-    model.save(os.path.join(model_dir, "full_mnist_model.h5"))
 
 
 

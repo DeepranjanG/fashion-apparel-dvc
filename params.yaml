@@ -22,8 +22,8 @@ estimators:
       optimiser: "adam"
       metrics: ['accuracy']
       activation: "softmax"
-      batch_size: 128
-      epochs: 5
+      batch_size: 64
+      epochs: 2
 model_dir: saved_models
 
 reports:
@@ -31,3 +31,10 @@ reports:
   scores: report/scores.json
 
 webapp_model_dir: prediction_service/model/full_mnist_model.h5
+
+mlflow_config:
+  artifacts_dir: artifacts
+  experiment_name: CNN Experiment
+  run_name: mlops
+  registered_model_name: FashionMnistModel
+  remote_server_uri: http://0.0.0.0:1234

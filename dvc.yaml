@@ -32,10 +32,15 @@ stages:
     - estimators.CnnNetwork.params.activation
     - estimators.CnnNetwork.params.batch_size
     - estimators.CnnNetwork.params.epochs
-    metrics:
-    - report/scores.json:
-        cache: false
-    - report/params.json:
-        cache: false
-    outs:
-    - saved_models/full_mnist_model.h5
+    # metrics:
+    # - report/scores.json:
+    #     cache: false
+    # - report/params.json:
+    #     cache: false
+    # outs:
+    # - saved_models/full_mnist_model.h5
+
+    # log_production_model:
+    # cmd: python src/log_production_model.py --config=params.yaml
+    # deps:
+    # - src/log_production_model.py

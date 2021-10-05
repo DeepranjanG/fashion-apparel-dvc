@@ -1,0 +1,4 @@
+mlflow
+h5py<3.0.0
+keras==2.4.3
+tensorflow==2.2.0

@@ -48,24 +48,14 @@ stages:
       md5: 976229da8a00a3ccf41b8009e4e48d77
       size: 133047193
     - path: src/train_and_evaluate.py
-      md5: cb643bd55f2eecb392c5e3a7bcace89e
-      size: 3150
+      md5: 8b47506d941b52f55bf217f8b50906e5
+      size: 3293
     params:
       params.yaml:
         estimators.CnnNetwork.params.activation: softmax
-        estimators.CnnNetwork.params.batch_size: 128
-        estimators.CnnNetwork.params.epochs: 5
+        estimators.CnnNetwork.params.batch_size: 64
+        estimators.CnnNetwork.params.epochs: 2
         estimators.CnnNetwork.params.loss: sparse_categorical_crossentropy
         estimators.CnnNetwork.params.metrics:
         - accuracy
         estimators.CnnNetwork.params.optimiser: adam
-    outs:
-    - path: report/params.json
-      md5: fe48f6f9d8f06974bddbfe1a786e7003
-      size: 195
-    - path: report/scores.json
-      md5: c5e929036ba9dfb2e5412c3b87971c14
-      size: 71
-    - path: saved_models/full_mnist_model.h5
-      md5: 86dd837114fda5a634afedfed48bb035
-      size: 455344
